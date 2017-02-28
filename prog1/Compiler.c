@@ -96,8 +96,7 @@ static int digit()
 	return reg;
 }
 
-static int variable()
-{
+static int variable(){
 	int reg;
 
 	if (!is_identifier(token)) {
@@ -110,14 +109,13 @@ static int variable()
 	return reg;
 }
 
-static int expr()
-{
+static int expr(){
 	int reg, left_reg, right_reg;
 
 	switch (token) {
 
 	case '+':
-		next_token();
+		 next_token();
 		left_reg = expr();
 		right_reg = expr();
 		reg = next_register();
@@ -162,39 +160,71 @@ static int expr()
 	}
 }
 
-static void assign()
-{
-	/* YOUR CODE GOES HERE */
+static void assign(){
+	int var, expression;
+	switch(token){
+		case 'a'...'p':
+			var = variable();
+			if(token != '='){
+				ERROR("Expected symbol =, got symbol %c\n", token);
+				exit(EXIT_FAILURE);
+			}
+			next_token();
+			expression = expr();
+			return;
+		default:
+			ERROR("Symbol %c unknown\n", token);
+	                exit(EXIT_FAILURE);
+	}
 }
 
-static void print()
-{
-	/* YOUR CODE GOES HERE */
+static void print(){
+	int var;
+	switch(token){
+		case '#':
+			next_token();
+			var = variable();
+			CodeGen(OUTPUTAI, 0, var, EMPTY_FIELD);
+	}
 }
 
-static void stmt()
-{
-	/* YOUR CODE GOES HERE */
+static void stmt(){
+	switch(token){
+		case '#':
+			print();
+			return;
+		case 'a'...'p':
+			assign();
+			return;
+		default:
+			ERROR("Symbol %c unknown\n", token);
+                        exit(EXIT_FAILURE);
+	}
 }
 
-static void morestmts()
-{
-	/* YOUR CODE GOES HERE */
+static void morestmts(){
+	switch(token){
+		case ';':
+			next_token();
+			stmtlist();
+	}
 }
 
-static void stmtlist()
-{
-	/* YOUR CODE GOES HERE */
+static void stmtlist(){
+	switch(token){
+		case 'a'...'p':
+		case '#':
+			stmt();
+			morestmts();
+			return;
+		default:
+			ERROR("Symbol %c unknown\n", token);
+                        exit(EXIT_FAILURE);
+	}
 }
 
-static void program()
-{
-	/* YOUR CODE GOES HERE */
-
-        /* THIS CODE IS BOGUS */
-        int dummy;
-        /* THIS CODE IS BOGUS */
-	dummy = expr();
+static void program(){
+	stmtlist();
 
 	if (token != '.') {
 	  ERROR("Program error.  Current input symbol is %c\n", token);
