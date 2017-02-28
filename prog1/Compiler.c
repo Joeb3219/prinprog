@@ -164,13 +164,15 @@ static void assign(){
 	int var, expression;
 	switch(token){
 		case 'a'...'p':
-			var = variable();
+			var = token - 'a';
+			next_token();
 			if(token != '='){
 				ERROR("Expected symbol =, got symbol %c\n", token);
 				exit(EXIT_FAILURE);
 			}
 			next_token();
 			expression = expr();
+			CodeGen(STOREAI, expression, 0, var*4);
 			return;
 		default:
 			ERROR("Symbol %c unknown\n", token);
@@ -183,8 +185,9 @@ static void print(){
 	switch(token){
 		case '#':
 			next_token();
-			var = variable();
-			CodeGen(OUTPUTAI, 0, var, EMPTY_FIELD);
+			var = token-'a';
+			next_token();
+			CodeGen(OUTPUTAI, 0, var*4, EMPTY_FIELD);
 	}
 }
 
