@@ -16,7 +16,6 @@
 static int numOutputVariables = 0, *outputRegisters;
 
 int getRegStored(Instruction *head, int offset, int reg){
-	printf("Looking for a register that has offset of %d from reg %d\n", offset, reg);
 	Instruction *instr = head;
 	do{
 		if(instr->opcode == STOREAI){
@@ -89,6 +88,12 @@ int main(){
 				// If this register is used in output, then both registers in this operation are, too.
 				setRegisterIsOutput(instr->field1);
 				setRegisterIsOutput(instr->field2);
+			}
+		}else if(instr->opcode == LOADAI){
+			if(isRegisterOutput(instr->field3)){
+				// We are loading a value which is important for the output, so whatever is stored there is important.
+				reg1 = getRegStored(instr, instr->field2, instr->field1);
+				setRegisterIsOutput(reg1);
 			}
 		}
 		instr = instr->prev;
