@@ -37,6 +37,7 @@ void setRegisterIsOutput(int reg){
 }
 
 int isRegisterOutput(int reg){
+	if(!outputRegisters) return 0;
 	int i;
 	for(i = 0; i < numOutputVariables; i ++){
 		if(reg == outputRegisters[i]) return 1;
@@ -57,7 +58,7 @@ void removeInstruction(Instruction *instr){
 
 int main(){
 	Instruction *head, *instr, *instr2;
-	int reg1, reg2;
+	int reg1;
 
 	head = ReadInstructionList(stdin);
 	if (!head) {
@@ -122,6 +123,14 @@ int main(){
 
 	if (head)
 		PrintInstructionList(stdout, head);
+
+	while(head != NULL){
+		instr = head->next;
+		free(head);
+		head = instr;
+	}
+
+	free(outputRegisters);
 
 	return EXIT_SUCCESS;
 }
