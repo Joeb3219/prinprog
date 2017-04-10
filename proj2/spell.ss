@@ -20,6 +20,7 @@
 ;; -----------------------------------------------------
 ;; KEY FUNCTION
 
+; Strategy for key: Map every value in w to the ctv version, then reduce among all of the entries the formula of (29*a + b), where a begins at 5187.
 (define key
   (lambda (w)
      (reduce (lambda (a b) (+ (* 29 b) a)) (
@@ -39,7 +40,9 @@
 ;; value of parameter "size" should be a prime number
 (define gen-hash-division-method
   (lambda (size) ;; range of values: 0..size-1
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+     (lambda(k)
+       (modulo (key k) size)
+     )
 ))
 
 ;; value of parameter "size" is not critical
