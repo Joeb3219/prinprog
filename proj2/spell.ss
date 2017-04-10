@@ -9,12 +9,55 @@
 (load "include.ss")
 
 ;; contains simple dictionary definition
-(load "test-dictionary.ss")
+(load "dictionary.ss")
 
 ;; -----------------------------------------------------
 ;; HELPER FUNCTIONS
 
-;; *** CODE FOR ANY HELPER FUNCTION GOES HERE ***
+(define hashThroughList
+  (lambda (hashfunctionlist w)
+    (map
+     (lambda (h) (h w))
+     hashfunctionlist
+    )
+  )
+)
+
+(define areAllInList?
+  (lambda (l xList)
+    (reduce
+     (lambda (a b)
+       (if (equal? a b)
+           a
+           #f
+       )
+     )
+    (map (lambda (xL) (isInList? l xL)) xList)
+    #t
+    )
+  )
+)
+
+(define isInList?
+  (lambda (l x)
+    (if (null? l)
+        #f ; Null list : not in list
+        (if (equal? (car l) x)
+            #t
+            (isInList? (cdr l) x)
+        )
+    )
+  )
+)
+
+(define populateBVec
+  (lambda (hashfunctionlist dict)
+    (if (null? dict)
+        '()
+        (append (hashThroughList hashfunctionlist (car dict)) (populateBVec hashfunctionlist (cdr dict)))
+    )
+  )
+)
 
 
 ;; -----------------------------------------------------
@@ -40,8 +83,8 @@
 ;; value of parameter "size" should be a prime number
 (define gen-hash-division-method
   (lambda (size) ;; range of values: 0..size-1
-     (lambda(k)
-       (modulo (key k) size)
+     (lambda(w)
+       (modulo (key w) size)
      )
 ))
 
@@ -51,7 +94,9 @@
 
 (define gen-hash-multiplication-method
   (lambda (size) ;; range of values: 0..size-1
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+     (lambda (w)
+       (floor (* size (- (* (key w) A) (floor (* (key w) A) ) )))
+     )
 ))
 
 
@@ -93,7 +138,14 @@
 
 (define gen-checker
   (lambda (hashfunctionlist dict)
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+    (let ((bitVector (populateBVec hashfunctionlist dict)))
+      (lambda (w)
+        (let ((hash (populateBVec hashfunctionlist (cons w '()))))
+          ; We have a bitVector and k, run through until we find this index:
+          (areAllInList? bitVector hash)
+        )
+      )
+    )
 ))
 
 
