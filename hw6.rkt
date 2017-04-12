@@ -61,12 +61,14 @@
 
 (define rev
   (lambda (l)
-    (display l) (newline)
       (if (null? l)
           '()
-          (if (pair? (car l))
-              (cons (rev (cdr l)) (rev (car l)))
-              (append (rev (cdr l)) (cons (car l) '()))
+          (if (list? l)
+              (if (pair? (cdr l))
+                  (append (rev (cdr l)) (cons (rev (car l)) '()))
+                  (append (cdr l) (cons (rev (car l)) '()))
+              )
+              l
           )
       )
   )
