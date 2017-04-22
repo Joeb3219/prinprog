@@ -156,6 +156,21 @@
 (define checker-2 (gen-checker hashfl-2 dictionary))
 (define checker-3 (gen-checker hashfl-3 dictionary))
 
+(define allValid?
+  (lambda (check dict)
+    (reduce
+     (lambda (a b)
+       (if (equal? a b)
+           a
+           #f
+       )
+     )
+     (map check dict)
+     #t
+    )
+  )
+)
+
 ;; EXAMPLE APPLICATIONS OF A SPELL CHECKER
 ;;
 ;;  (checker-1 '(a r g g g g)) ==> #f
